@@ -1,0 +1,270 @@
+# 开发环境配置
+server:
+  # 服务器的HTTP端口
+  port: 8081
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  # jetty 配置 (继承自 RuoYi-Vue-Plus)
+  jetty:
+    max-http-form-post-size: -1
+    threads:
+      min: 8
+      max: 256
+
+# 验证码配置
+captcha:
+  enable: false
+  type: math
+  numberLength: 1
+  charLength: 4
+
+# 日志配置
+logging:
+  level:
+    org.fellow99.tpl: debug
+    org.dromara: info
+    org.springframework: warn
+    org.mybatis.spring.mapper: error
+    org.apache.fury: warn
+
+# 用户配置
+user:
+  password:
+    maxRetryCount: 5
+    lockTime: 10
+
+# Spring配置
+spring:
+  application:
+    name: tpl-manage
+  threads:
+    virtual:
+      enabled: false
+  task:
+    execution:
+      thread-name-prefix: async-
+      mode: force
+  # 资源信息
+  messages:
+    basename: i18n/messages
+  profiles:
+    active: dev
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  mvc:
+    static-path-pattern: /static/**
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
+  jackson:
+    serialization:
+      indent_output: false
+      fail_on_empty_beans: false
+    deserialization:
+      fail_on_unknown_properties: false
+
+# Sa-Token配置
+sa-token:
+  token-name: Authorization
+  is-concurrent: true
+  is-share: false
+  jwt-secret-key: ${SA_TOKEN_JWT_SECRET:}
+
+# security配置
+security:
+  excludes:
+    - /*.html
+    - /**/*.html
+    - /**/*.css
+    - /**/*.js
+    - /favicon.ico
+    - /error
+    - /*/api-docs
+    - /*/api-docs/**
+    - /warm-flow-ui/config
+    - /snail-chat/**
+    - /api/snail/chat/**
+
+# MyBatisPlus配置
+# https://baomidou.com/config/
+mybatis-plus:
+  # 自定义配置 是否全局开启逻辑删除
+  enableLogicDelete: true
+  # 多包名使用
+  mapperPackage: org.dromara.**.mapper
+  # 对应的 XML 文件位置
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 实体扫描
+  typeAliasesPackage: org.dromara.**.domain
+  global-config:
+    dbConfig:
+      idType: ASSIGN_ID
+
+# 数据加密
+mybatis-encryptor:
+  enable: false
+  algorithm: BASE64
+  encode: BASE64
+  password:
+  publicKey:
+  privateKey:
+
+# api接口加密
+api-decrypt:
+  enabled: false
+  headerFlag: encrypt-key
+  publicKey: ${RSA_PUBLIC_KEY:}
+  privateKey: ${RSA_PRIVATE_KEY:}
+
+# Springdoc 配置
+springdoc:
+  api-docs:
+    enabled: true
+  info:
+    title: '标题：tpl-workspace管理后台_接口文档'
+    description: '描述：tpl-workspace管理后台系统接口文档'
+    version: '版本号: 1.0.0'
+    contact:
+      name: tpl-manage
+      email: admin@fellow99.com
+      url: https://github.com/fellow99/tpl-manage
+  group-configs:
+    - group: 1.通用模块
+      packages-to-scan: org.dromara.web
+    - group: 2.系统模块
+      packages-to-scan: org.dromara.system
+
+# 防止XSS攻击
+xss:
+  enabled: true
+  excludeUrls:
+    - /system/notice
+    - /warm-flow/save-json
+
+--- # 分布式锁 lock4j 全局配置
+lock4j:
+  acquire-timeout: 3000
+  expire: 30000
+
+--- # Actuator 监控端点的配置项
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+    logfile:
+      external-file: ./logs/sys-console.log
+
+--- # 统一消息推送配置
+message:
+  enabled: true
+  transport: sse
+  path: /resource/message
+  allowedOrigins: '*'
+  sse-timeout: 86400000
+  heartbeat-interval: 60
+  web-socket-send-time-limit: 10000
+  web-socket-buffer-size-limit: 64000
+
+--- # warm-flow工作流配置
+warm-flow:
+  enabled: true
+  ui: true
+  top-text-show: true
+  node-tooltip: true
+  token-name: ${sa-token.token-name},clientid
+
+--- # LiteFlow 业务规则编排
+liteflow:
+  enable: ${warm-flow.enabled:true}
+  rule-source: classpath:liteflow/*.el.xml
+  enable-virtual-thread: true
+
+--- # mqtt 配置
+mqtt.client:
+  enabled: false
+  ip: 127.0.0.1
+  port: 1883
+  name: Mqtt-Client
+  client-id: 000001
+  username: ruoyi
+  password: ${MQTT_PASSWORD:}
+  timeout: 5
+  re-interval: 5000
+  version: mqtt_5
+  read-buffer-size: 8KB
+  max-bytes-in-message: 10MB
+  keep-alive-secs: 60
+  session-expiry-interval-secs: 0
+  mqtt-executor-size: 2
+  ssl:
+    enabled: false
+    keystore-path:
+    keystore-pass:
+    truststore-path:
+    truststore-pass:
+
+--- # elasticsearch 功能配置
+easy-es:
+  enable: false
+  compatible: true
+  address: localhost:9200
+  schema: http
+  keep-alive-millis: 18000
+  connectTimeout: 5000
+  socketTimeout: 5000
+  connectionRequestTimeout: 5000
+  maxConnTotal: 100
+  maxConnPerRoute: 100
+  global-config:
+    print-dsl: true
+    asyncProcessIndexBlocking: true
+    db-config:
+      map-underscore-to-camel-case: true
+      id-type: customize
+      field-strategy: not_null
+      enable-track-total-hits: true
+      refresh-policy: immediate
+
+--- # MCP 服务端配置
+spring.ai.mcp:
+  server:
+    enabled: true
+    protocol: STREAMABLE
+    name: ${spring.application.name}
+    version: 1.0.0
+    type: SYNC
+    annotation-scanner:
+      enabled: true
+    streamable-http:
+      mcp-endpoint: /mcp
+
+--- # MCP 客户端配置
+spring.ai.mcp:
+  client:
+    enabled: false
+    name: ${spring.application.name}-mcp-client
+    version: 1.0.0
+    type: SYNC
+    toolcallback:
+      enabled: false
+    streamable-http:
+      connections:
+        knowledge:
+          url: http://localhost:9001
+        crm:
+          url: http://localhost:9002
+    stdio:
+      connections:
+        filesystem:
+          command: npx
+          args:
+            - -y
+            - '@modelcontextprotocol/server-filesystem'
+            - D:/data

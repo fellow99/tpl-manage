@@ -1,0 +1,117 @@
+# ============================================================
+# Docker 容器环境配置 (spring.profiles.active=docker)
+# 使用 Docker Compose 服务名代替 localhost
+# ============================================================
+
+--- # Sa-Token (Docker 环境 — Redis 持久化会话)
+sa-token:
+  alone-redis:
+    database: 2
+    host: ${REDIS_HOST:}
+    port: ${REDIS_PORT:}
+    password: ${REDIS_PASSWORD:}
+    timeout: 10s
+    ssl.enabled: false
+
+--- # API 接口加密 (Docker 测试环境禁用)
+api-decrypt:
+  enabled: false
+
+--- # 验证码 (Docker 环境启用)
+captcha:
+  enable: true
+  type: math
+
+--- # 数据源配置 (PostgreSQL - Docker 服务名)
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      primary: master
+      strict: true
+      datasource:
+        master:
+          type: ${spring.datasource.type}
+          driverClassName: org.postgresql.Driver
+          url: ${DB_URL:}
+          username: ${DB_USERNAME:}
+          password: ${DB_PASSWORD:}
+      hikari:
+        maxPoolSize: 20
+        minIdle: 10
+        connectionTimeout: 30000
+        validationTimeout: 5000
+        idleTimeout: 600000
+        maxLifetime: 1800000
+        keepaliveTime: 30000
+
+--- # Redis 单机配置 (Docker 服务名)
+spring.data:
+  redis:
+    host: ${REDIS_HOST:}
+    port: ${REDIS_PORT:}
+    database: 0
+    password: ${REDIS_PASSWORD:}
+    timeout: 10s
+    ssl.enabled: false
+
+# Redisson 配置
+redisson:
+  keyPrefix:
+  threads: 4
+  nettyThreads: 8
+  singleServerConfig:
+    clientName: tpl-manage
+    address: redis://redis:6379
+    password: ${REDIS_PASSWORD:}
+    connectionMinimumIdleSize: 8
+    connectionPoolSize: 32
+    idleConnectionTimeout: 10000
+    timeout: 3000
+    subscriptionConnectionPoolSize: 50
+
+--- # MinIO 文件存储 (需要单独部署)
+minio:
+  endpoint: http://minio:9000
+  accessKey: minioadmin
+  secretKey: ${MINIO_SECRET_KEY:}
+  bucketName: tpl-manage
+
+--- # 日志级别
+logging:
+  level:
+    org.fellow99.tpl: DEBUG
+    org.dromara: INFO
+    org.springframework: WARN
+
+--- # MyBatis Plus SQL 日志
+mybatis-plus:
+  sql-log:
+    enabled: false
+    output: console
+
+--- # 监控中心 (Docker 环境禁用)
+spring.boot.admin.client:
+  enabled: false
+
+--- # snail-job (Docker 环境禁用)
+snail-job:
+  enabled: false
+  port: 0
+
+--- # snail-ai (Docker 环境禁用)
+snail-ai:
+  enabled: false
+  port: 0
+
+--- # 邮件
+mail:
+  enabled: false
+
+--- # 短信
+sms:
+  config-type: yaml
+  restricted: true
+  minute-max: 1
+  account-max: 30
+  blends:

@@ -1,0 +1,223 @@
+--- # 监控中心配置
+spring.boot.admin.client:
+  enabled: false
+  url: http://localhost:9090/admin
+  instance:
+    service-host-type: IP
+  username: ruoyi
+  password: 123456
+
+--- # snail-job 配置
+snail-job:
+  enabled: false
+  group: "ruoyi_group"
+  token: "SJ_cKqBTPzCsWA3VyuCfFoccmuIEGXjr5KT"
+  server:
+    host: 127.0.0.1
+    port: 17888
+  namespace: ${spring.profiles.active}
+  port: 2${server.port}
+  host:
+
+--- # snail-ai 配置
+snail-ai:
+  enabled: false
+  server:
+    host: 127.0.0.1
+    port: 18888
+  app-id: 1
+  token: SAI_566a6bfbc26e4998b4841cc927d50c5d
+  port: 3${server.port}
+  skill-temp-dir: /tmp/snail-ai-agent/skills
+  chat.ui.embed:
+    enabled: true
+    show-header: false
+    show-sidebar-user: false
+    show-agent-market: true
+    compact-input: true
+    lock-agent: false
+  open-api:
+    enabled: true
+    web-port: 8900
+    https: false
+    prefix: snail-ai
+    connect-timeout-ms: 5000
+    read-timeout-ms: 60000
+    chat-timeout-ms: 300000
+
+--- # 日志级别
+logging:
+  level:
+    org.fellow99.tpl: DEBUG
+    org.dromara: INFO
+    org.springframework: WARN
+
+--- # MyBatis Plus SQL 日志配置
+mybatis-plus:
+  sql-log:
+    enabled: true
+    output: console
+
+--- # 数据源配置 (PostgreSQL)
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    dynamic:
+      primary: master
+      strict: true
+      datasource:
+        master:
+          type: ${spring.datasource.type}
+          driverClassName: org.postgresql.Driver
+          url: ${DB_URL:}
+          username: ${DB_USERNAME:}
+          password: ${DB_PASSWORD:}
+      hikari:
+        maxPoolSize: 20
+        minIdle: 10
+        connectionTimeout: 30000
+        validationTimeout: 5000
+        idleTimeout: 600000
+        maxLifetime: 1800000
+        keepaliveTime: 30000
+
+--- # Redis 单机配置
+spring.data:
+  redis:
+    host: ${REDIS_HOST:}
+    port: ${REDIS_PORT:}
+    database: 0
+    password: ${REDIS_PASSWORD:}
+    timeout: 10s
+    ssl.enabled: false
+
+# Redisson 配置
+redisson:
+  keyPrefix:
+  threads: 4
+  nettyThreads: 8
+  singleServerConfig:
+    clientName: tpl-manage
+    connectionMinimumIdleSize: 8
+    connectionPoolSize: 32
+    idleConnectionTimeout: 10000
+    timeout: 3000
+    subscriptionConnectionPoolSize: 50
+
+--- # MinIO 文件存储配置
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minioadmin
+  secretKey: ${MINIO_SECRET_KEY:}
+  bucketName: tpl-manage
+
+--- # mail 邮件发送
+mail:
+  enabled: false
+  host: smtp.163.com
+  port: 465
+  auth: true
+  from: xxx@163.com
+  user: xxx@163.com
+  pass: xxxxxxxxxx
+  starttlsEnable: true
+  sslEnable: true
+  timeout: 0
+  connectionTimeout: 0
+
+--- # sms 短信
+sms:
+  config-type: yaml
+  restricted: true
+  minute-max: 1
+  account-max: 30
+  blends:
+    config1:
+      supplier: alibaba
+      access-key-id: 您的accessKey
+      access-key-secret: 您的accessKeySecret
+      signature: 您的短信签名
+      sdk-app-id: 您的sdkAppId
+    config2:
+      supplier: tencent
+      access-key-id: 您的accessKey
+      access-key-secret: 您的accessKeySecret
+      signature: 您的短信签名
+      sdk-app-id: 您的sdkAppId
+
+--- # 三方授权
+justauth:
+  address: http://localhost:80
+  type:
+    maxkey:
+      server-url: http://sso.maxkey.top
+      client-id: 876892492581044224
+      client-secret: x1Y5MTMwNzIwMjMxNTM4NDc3Mzche8
+      redirect-uri: ${justauth.address}/social-callback?source=maxkey
+    topiam:
+      server-url: http://127.0.0.1:1898/api/v1/authorize/y0q************spq***********8ol
+      client-id: 449c4*********937************759
+      client-secret: ac7***********1e0************28d
+      redirect-uri: ${justauth.address}/social-callback?source=topiam
+      scopes: [openid, email, phone, profile]
+    qq:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=qq
+      union-id: false
+    weibo:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=weibo
+    gitee:
+      client-id: 91436b7940090d09c72c7daf85b959cfd5f215d67eea73acbf61b6b590751a98
+      client-secret: 02c6fcfd70342980cd8dd2f2c06c1a350645d76c754d7a264c4e125f9ba915ac
+      redirect-uri: ${justauth.address}/social-callback?source=gitee
+    dingtalk:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=dingtalk
+    baidu:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=baidu
+    csdn:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=csdn
+    coding:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=coding
+      coding-group-name: xx
+    oschina:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=oschina
+    alipay_wallet:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=alipay_wallet
+      alipay-public-key: MIIB**************DAQAB
+    wechat_open:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=wechat_open
+    wechat_mp:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=wechat_mp
+    wechat_enterprise:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=wechat_enterprise
+      agent-id: 1000002
+    gitlab:
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=gitlab
+    gitea:
+      server-url: https://demo.gitea.com
+      client-id: 10**********6
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${justauth.address}/social-callback?source=gitea
