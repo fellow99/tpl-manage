@@ -5,7 +5,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)](./tpl-manage-admin)
 [![JDK](https://img.shields.io/badge/JDK-21-orange)]()
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791?logo=postgresql)](./sql)
-[![License](https://img.shields.io/badge/license-Proprietary-red)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
 ---
 
@@ -289,3 +289,9 @@ tpl-manage/
 - [RuoYi-Vue-Plus Gitee](https://gitee.com/dromara/RuoYi-Vue-Plus)
 - [Sa-Token 文档](https://sa-token.cc)
 - [MyBatis-Plus 文档](https://baomidou.com)
+
+---
+
+## License
+
+本项目基于 [MIT License](./LICENSE) 开源。
